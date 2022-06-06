@@ -9,7 +9,10 @@ import torch.nn.parallel
 import torch.optim as optim
 import torch.utils.data
 from torch.autograd import Variable
+import kaggle
 
+
+# Download data from Kaggle API and load it into a pandas dataframe
 
 
 # Read data from open source dataset
