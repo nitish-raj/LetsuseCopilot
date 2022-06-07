@@ -1,5 +1,6 @@
 # Train a basic model using pytorch
 
+#%%
 # Importing the libraries
 import numpy as np
 import pandas as pd
@@ -13,26 +14,31 @@ import kaggle
 
 
 # Download data from Kaggle API and load it into a pandas dataframe
+# kaggle datasets download -d odedgolden/movielens-1m-dataset
+# unzip movielens-1m-dataset.zip
+# rm movielens-1m-dataset.zip
 
+#%%
 
 # Read data from open source dataset
-movies = pd.read_csv('ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1')
-users = pd.read_csv('ml-1m/users.dat', sep='::', header=None, engine='python', encoding='latin-1')
-ratings = pd.read_csv('ml-1m/ratings.dat', sep='::', header=None, engine='python', encoding='latin-1')
+movies = pd.read_csv('ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['movie_id', 'title', 'genre'])
+users = pd.read_csv('ml-1m/users.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
+ratings = pd.read_csv('ml-1m/ratings.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
+#%%
+movies.head()
+#%%
 
-# Data preprocessing
-# Create a list of movies
-movies = movies[:10]
-movies = movies.values
-movies = np.array(movies)
-# Create a list of users
-users = users[:10]
-users = users.values
-users = np.array(users)
-# Create a list of ratings
-ratings = ratings[:10]
-ratings = ratings.values
-ratings = np.array(ratings)
+# Use sklearn encoding to convert movies to numerical data
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+le.fit(movies['genre'])
+
+# Map movie genres to numbers
+movies['genre'] = le.transform(movies['genre'])
+
+
+
+#%%
 
 # Visualize the data
 # print(movies)
@@ -46,10 +52,15 @@ plt.xlabel('User ID')
 plt.ylabel('Rating')
 plt.show()
 
+#%%
 # Split the data into training and test set usning sklearn
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(movies, ratings, test_size=0.25, random_state=42)
 
+#%%
+X_train
+
+#%%
 # Convert the data into torch tensors
 X_train = torch.FloatTensor(X_train)
 X_test = torch.FloatTensor(X_test)
