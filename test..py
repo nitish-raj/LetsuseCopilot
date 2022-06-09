@@ -21,11 +21,18 @@ import kaggle
 #%%
 
 # Read data from open source dataset
+<<<<<<< HEAD
 movies = pd.read_csv('ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['MovieID', 'title', 'genre'])
 users = pd.read_csv('ml-1m/users.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
 ratings = pd.read_csv('ml-1m/ratings.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
 #%%
 ratings.head()
+=======
+movies = pd.read_csv('ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['movie_id', 'title', 'genre'])
+users = pd.read_csv('ml-1m/users.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
+ratings = pd.read_csv('ml-1m/ratings.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
+#%%
+movies.head()
 #%%
 
 # Use sklearn encoding to convert movies to numerical data
@@ -36,12 +43,51 @@ le.fit(movies['genre'])
 # Map movie genres to numbers
 movies['genre'] = le.transform(movies['genre'])
 
+
+
+>>>>>>> b86971d70a6d8c5ec578d4908a9bf66004daa988
+#%%
+
+# Use sklearn encoding to convert movies to numerical data
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+le.fit(movies['genre'])
+
+# Map movie genres to numbers
+movies['genre'] = le.transform(movies['genre'])
+
+<<<<<<< HEAD
 # Map movie titles to numbers
 le.fit(movies['title'])
 movies['title'] = le.transform(movies['title'])
 
 #Join movies and ratings dataframes
 data = pd.merge(movies, ratings)
+=======
+#%%
+# Split the data into training and test set usning sklearn
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(movies, ratings, test_size=0.25, random_state=42)
+
+#%%
+X_train
+
+#%%
+# Convert the data into torch tensors
+X_train = torch.FloatTensor(X_train)
+X_test = torch.FloatTensor(X_test)
+y_train = torch.FloatTensor(y_train)
+y_test = torch.FloatTensor(y_test)
+
+# Create the architecture of the neural network
+class SAE(nn.Module):
+    def __init__(self):
+        super(SAE, self).__init__()
+        self.fc1 = nn.Linear(1682, 20)
+        self.fc2 = nn.Linear(20, 10)
+        self.fc3 = nn.Linear(10, 20)
+        self.fc4 = nn.Linear(20, 1682)
+>>>>>>> b86971d70a6d8c5ec578d4908a9bf66004daa988
 
 # Drop the timestamp column
 data = data.drop(['Timestamp'], axis=1)
