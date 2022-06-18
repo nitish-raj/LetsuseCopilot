@@ -11,12 +11,30 @@ import torch.optim as optim
 import torch.utils.data
 from torch.autograd import Variable
 import kaggle
+import os
 
 
-# Download data from Kaggle API and load it into a pandas dataframe
-# kaggle datasets download -d odedgolden/movielens-1m-dataset
-# unzip movielens-1m-dataset.zip
-# rm movielens-1m-dataset.zip
+# Down data using kaggle api for movie lens 1m
+kaggle.api.authenticate()
+kaggle.api.dataset_download_files("odedgolden/movielens-1m-dataset", path=os.getcwd())
+
+# Unzip data to new folder
+import zipfile
+with zipfile.ZipFile("movielens-1m-dataset.zip", 'r') as zip_ref:
+    zip_ref.extractall()
+
+# Delete zip file
+os.remove("movielens-1m-dataset.zip")
+
+# create new folder ml-1m
+os.mkdir("ml-1m")
+
+# move all extracted data to new folder
+import shutil
+shutil.move("ratings.dat", "ml-1m/ratings.dat")
+shutil.move("movies.dat", "ml-1m/movies.dat")
+shutil.move("users.dat", "ml-1m/users.dat")
+shutil.move("README", "ml-1m/README")
 
 #%%
 
@@ -24,9 +42,6 @@ import kaggle
 movies = pd.read_csv('ml-1m/movies.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['MovieID', 'title', 'genre'])
 users = pd.read_csv('ml-1m/users.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
 ratings = pd.read_csv('ml-1m/ratings.dat', sep='::', header=None, engine='python', encoding='latin-1', names=['UserID','MovieID','Rating','Timestamp'])
-#%%
-ratings.head()
-#%%
 
 # Use sklearn encoding to convert movies to numerical data
 from sklearn.preprocessing import LabelEncoder
@@ -73,6 +88,7 @@ X_test = torch.FloatTensor(X_test.values)
 y_train = torch.FloatTensor(y_train.values)
 y_test = torch.FloatTensor(y_test.values)
 
+#%%
 # Create model to predict the rating of a movie
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):

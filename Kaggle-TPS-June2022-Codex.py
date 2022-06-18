@@ -52,3 +52,11 @@ columns_with_missing
 # 11. Create a list of column names without missing values
 columns_without_missing = [c for c in columns if c not in columns_with_missing]
 columns_without_missing
+
+# 12. Write a function for feature enginering
+def feature_engineering(df):
+    # Add mean , mode and median of each column
+    df['mean'] = df.mean(axis=0)
+    df['mode'] = df.mode(axis=0)
+    df['median'] = df.median(axis=0)
+    return df
